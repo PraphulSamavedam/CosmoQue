@@ -507,7 +507,8 @@ export function ConsolePage() {
     <div data-component="ConsolePage">
       <div className="content-top">
         <div className="content-title">
-          <img src="/openai-logomark.svg" />
+          {/* <img src="/openai-logomark.svg" /> */}
+          <img src="/logomark.svg"/>
           <span>realtime console</span>
         </div>
         <div className="content-api-key">
@@ -692,6 +693,12 @@ export function ConsolePage() {
           </div>
         </div>
         <div className="content-right">
+        <div className="content-block kv">
+            <div className="content-block-title">Important Information()</div>
+            <div className="content-block-body content-kv">
+              {JSON.stringify(memoryKv, null, 2)}
+            </div>
+          </div>
           <div className="content-block map">
             <div className="content-block-title">get_weather()</div>
             <div className="content-block-title bottom">
@@ -716,12 +723,6 @@ export function ConsolePage() {
                   location={coords.location}
                 />
               )}
-            </div>
-          </div>
-          <div className="content-block kv">
-            <div className="content-block-title">set_memory()</div>
-            <div className="content-block-body content-kv">
-              {JSON.stringify(memoryKv, null, 2)}
             </div>
           </div>
         </div>
