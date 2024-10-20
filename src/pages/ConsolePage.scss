@@ -147,54 +147,72 @@
     }
   }
 
-  .conversation-item {
-    position: relative;
+  .content-bottom {
     display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-    &:not(:hover) .close {
-      display: none;
-    }
-    .close {
-      position: absolute;
-      top: 0px;
-      right: -20px;
-      background: #aaa;
-      color: #fff;
-      display: flex;
-      border-radius: 16px;
-      padding: 2px;
-      cursor: pointer;
-      &:hover {
-        background: #696969;
-      }
-      svg {
-        stroke-width: 3;
-        width: 12px;
-        height: 12px;
-      }
-    }
-    .speaker {
-      position: relative;
-      text-align: left;
-      gap: 16px;
-      width: 80px;
-      flex-shrink: 0;
-      margin-right: 16px;
-      &.user {
-        color: #0099ff;
-      }
-      &.assistant {
-        color: #009900;
-      }
-    }
-    .speaker-content {
-      color: #18181b;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+   
+  .content-bottom .content-block {
+    flex: 1;
+    margin: 0 10px;
+    background-color: #927979;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+   
+  .content-bottom .content-block-title {
+    background-color: hsl(93, 100%, 74%);
+    padding: 10px;
+    font-weight: bold;
+  }
+   
+  .content-bottom .content-block-body {
+    padding: 15px;
   }
 
+  .conversation-details {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+
+    .content-block-data1 {
+      flex: 1;
+      margin: 0 8px;
+      background-color: #8585fd; // Same as existing kv containers
+      border-radius: 8px;
+      overflow: hidden;
+
+      .content-block-body {
+        padding: 16px;
+        margin-top: 56px;
+      }
+    }
+    .content-block-data2 {
+      flex: 1;
+      margin: 0 8px;
+      background-color: #3e8b4b; // Same as existing kv containers
+      border-radius: 8px;
+      overflow: hidden;
+
+      .content-block-body {
+        padding: 16px;
+        margin-top: 56px;
+      }
+    }
+    .content-block-data3 {
+      flex: 1;
+      margin: 0 8px;
+      background-color: #97949c; // Same as existing kv containers
+      border-radius: 8px;
+      overflow: hidden;
+
+      .content-block-body {
+        padding: 16px;
+        margin-top: 56px;
+      }
+    }
+  }
   // .conversation-details{
   //   display: flex;
     
