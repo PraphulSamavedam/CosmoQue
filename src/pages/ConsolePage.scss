@@ -141,7 +141,8 @@
         height: 200px;
         min-height: 0;
         max-height: 200px;
-        border-top: 1px solid #e7e7e7;
+        // border-top: 1px solid #e00f0f;
+        border-block: 1px solid #e00f0f;
       }
     }
   }
@@ -194,59 +195,63 @@
     }
   }
 
-  .event {
-    border-radius: 3px;
-    white-space: pre;
-    display: flex;
-    padding: 0px;
-    gap: 16px;
-    .event-timestamp {
-      text-align: left;
-      gap: 8px;
-      padding: 4px 0px;
-      width: 80px;
-      flex-shrink: 0;
-      margin-right: 16px;
-    }
-    .event-details {
-      display: flex;
-      flex-direction: column;
-      color: #18181b;
-      gap: 8px;
-      .event-summary {
-        padding: 4px 8px;
-        margin: 0px -8px;
-        &:hover {
-          border-radius: 8px;
-          background-color: #f0f0f0;
-        }
-        cursor: pointer;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        .event-source {
-          flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          &.client {
-            color: #0099ff;
-          }
-          &.server {
-            color: #009900;
-          }
-          &.error {
-            color: #990000;
-          }
-          svg {
-            stroke-width: 3;
-            width: 12px;
-            height: 12px;
-          }
-        }
-      }
-    }
-  }
+  // .conversation-details{
+  //   display: flex;
+    
+  // }
+  // .event {
+  //   border-radius: 3px;
+  //   white-space: pre;
+  //   display: flex;
+  //   padding: 0px;
+  //   gap: 16px;
+  //   .event-timestamp {
+  //     text-align: left;
+  //     gap: 8px;
+  //     padding: 4px 0px;
+  //     width: 80px;
+  //     flex-shrink: 0;
+  //     margin-right: 16px;
+  //   }
+  //   .event-details {
+  //     display: flex;
+  //     flex-direction: column;
+  //     color: #18181b;
+  //     gap: 8px;
+  //     .event-summary {
+  //       padding: 4px 8px;
+  //       margin: 0px -8px;
+  //       &:hover {
+  //         border-radius: 8px;
+  //         background-color: #f0f0f0;
+  //       }
+  //       cursor: pointer;
+  //       display: flex;
+  //       gap: 8px;
+  //       align-items: center;
+  //       .event-source {
+  //         flex-shrink: 0;
+  //         display: flex;
+  //         align-items: center;
+  //         gap: 8px;
+  //         &.client {
+  //           color: #0099ff;
+  //         }
+  //         &.server {
+  //           color: #009900;
+  //         }
+  //         &.error {
+  //           color: #990000;
+  //         }
+  //         svg {
+  //           stroke-width: 3;
+  //           width: 12px;
+  //           height: 12px;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   .visualization {
     position: absolute;

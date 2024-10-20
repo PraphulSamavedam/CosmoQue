@@ -62,8 +62,8 @@ export function ConsolePage() {
   const apiKey = LOCAL_RELAY_SERVER_URL
     ? ''
     : localStorage.getItem('tmp::voice_api_key') ||
-      prompt('OpenAI API Key') ||
-      '';
+    prompt('OpenAI API Key') ||
+    '';
   if (apiKey !== '') {
     localStorage.setItem('tmp::voice_api_key', apiKey);
   }
@@ -85,9 +85,9 @@ export function ConsolePage() {
       LOCAL_RELAY_SERVER_URL
         ? { url: LOCAL_RELAY_SERVER_URL }
         : {
-            apiKey: apiKey,
-            dangerouslyAllowAPIKeyInBrowser: true,
-          }
+          apiKey: apiKey,
+          dangerouslyAllowAPIKeyInBrowser: true,
+        }
     )
   );
 
@@ -271,8 +271,8 @@ export function ConsolePage() {
 
   /**
    * Auto-scroll the event logs
-   */
-  useEffect(() => {
+   * 
+   *   useEffect(() => {
     if (eventsScrollRef.current) {
       const eventsEl = eventsScrollRef.current;
       const scrollHeight = eventsEl.scrollHeight;
@@ -283,6 +283,7 @@ export function ConsolePage() {
       }
     }
   }, [realtimeEvents]);
+   */
 
   /**
    * Auto-scroll the conversation logs
@@ -384,15 +385,15 @@ export function ConsolePage() {
     // Add tools
     client.addTool(
       {
-        name: 'set_memory',
-        description: 'Saves important data about the user into memory.',
+        name: 'set_important_info',
+        description: 'Saves important data about the call information into memory.',
         parameters: {
           type: 'object',
           properties: {
             key: {
               type: 'string',
               description:
-                'The key of the memory value. Always use lowercase and underscores, no other characters.',
+                'The key of the memory value such as identifiers. Always use lowercase and underscores, no other characters.',
             },
             value: {
               type: 'string',
@@ -456,19 +457,20 @@ export function ConsolePage() {
     );
 
     // handle realtime events from client + server for event logging
-    client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
-      setRealtimeEvents((realtimeEvents) => {
-        const lastEvent = realtimeEvents[realtimeEvents.length - 1];
-        if (lastEvent?.event.type === realtimeEvent.event.type) {
-          // if we receive multiple events in a row, aggregate them for display purposes
-          lastEvent.count = (lastEvent.count || 0) + 1;
-          return realtimeEvents.slice(0, -1).concat(lastEvent);
-        } else {
-          return realtimeEvents.concat(realtimeEvent);
-        }
-      });
-    });
-    client.on('error', (event: any) => console.error(event));
+    // client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
+    //   setRealtimeEvents((realtimeEvents) => {
+    //     const lastEvent = realtimeEvents[realtimeEvents.length - 1];
+    //     if (lastEvent?.event.type === realtimeEvent.event.type) {
+    //       // if we receive multiple events in a row, aggregate them for display purposes
+    //       lastEvent.count = (lastEvent.count || 0) + 1;
+    //       return realtimeEvents.slice(0, -1).concat(lastEvent);
+    //     } else {
+    //       return realtimeEvents.concat(realtimeEvent);
+    //     }
+    //   });
+    // });
+    // client.on('error', (event: any) => console.error(event));
+
     client.on('conversation.interrupted', async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
       if (trackSampleOffset?.trackId) {
@@ -508,7 +510,7 @@ export function ConsolePage() {
       <div className="content-top">
         <div className="content-title">
           {/* <img src="/openai-logomark.svg" /> */}
-          <img src="/logomark.svg"/>
+          <img src="/logomark.svg" />
           <span>realtime console</span>
         </div>
         <div className="content-api-key">
@@ -525,7 +527,7 @@ export function ConsolePage() {
       </div>
       <div className="content-main">
         <div className="content-logs">
-          <div className="content-block events">
+          {/* <div className="content-block events">
             <div className="visualization">
               <div className="visualization-entry client">
                 <canvas ref={clientCanvasRef} />
@@ -598,7 +600,7 @@ export function ConsolePage() {
                 );
               })}
             </div>
-          </div>
+          </div> */}
           <div className="content-block conversation">
             <div className="content-block-title">conversation</div>
             <div className="content-block-body" data-conversation-content>
@@ -640,7 +642,7 @@ export function ConsolePage() {
                               (conversationItem.formatted.audio?.length
                                 ? '(awaiting transcript)'
                                 : conversationItem.formatted.text ||
-                                  '(item sent)')}
+                                '(item sent)')}
                           </div>
                         )}
                       {!conversationItem.formatted.tool &&
@@ -690,43 +692,43 @@ export function ConsolePage() {
                 isConnected ? disconnectConversation : connectConversation
               }
             />
+              </div>
+            </div>
+            <div className="content-right">
+              <div className="content-block kv">
+                <div className="content-block-title">Important Information()</div>
+                <div className="content-block-body content-kv">
+                  {JSON.stringify(memoryKv, null, 2)}
+                </div>
+              </div>
+              <div className="content-block map">
+                <div className="content-block-title">get_weather()</div>
+                <div className="content-block-title bottom">
+                  {marker?.location || 'not yet retrieved'}
+                  {!!marker?.temperature && (
+                    <>
+                      <br />
+                      🌡️ {marker.temperature.value} {marker.temperature.units}
+                    </>
+                  )}
+                  {!!marker?.wind_speed && (
+                    <>
+                      {' '}
+                      🍃 {marker.wind_speed.value} {marker.wind_speed.units}
+                    </>
+                  )}
+                </div>
+                <div className="content-block-body full">
+                  {coords && (
+                    <Map
+                      center={[coords.lat, coords.lng]}
+                      location={coords.location}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="content-right">
-        <div className="content-block kv">
-            <div className="content-block-title">Important Information()</div>
-            <div className="content-block-body content-kv">
-              {JSON.stringify(memoryKv, null, 2)}
-            </div>
-          </div>
-          <div className="content-block map">
-            <div className="content-block-title">get_weather()</div>
-            <div className="content-block-title bottom">
-              {marker?.location || 'not yet retrieved'}
-              {!!marker?.temperature && (
-                <>
-                  <br />
-                  🌡️ {marker.temperature.value} {marker.temperature.units}
-                </>
-              )}
-              {!!marker?.wind_speed && (
-                <>
-                  {' '}
-                  🍃 {marker.wind_speed.value} {marker.wind_speed.units}
-                </>
-              )}
-            </div>
-            <div className="content-block-body full">
-              {coords && (
-                <Map
-                  center={[coords.lat, coords.lng]}
-                  location={coords.location}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+        );
 }
