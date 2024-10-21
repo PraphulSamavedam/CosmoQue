@@ -25,7 +25,7 @@ import { Toggle } from '../components/toggle/Toggle';
 import { Map } from '../components/Map';
 
 import './ConsolePage.scss';
-import { isJsxOpeningLikeElement } from 'typescript';
+import { isJsxOpeningLikeElement, NullLiteral } from 'typescript';
 
 /**
  * Type for result from get_weather() function call
@@ -53,6 +53,26 @@ interface RealtimeEvent {
   count?: number;
   event: { [key: string]: any };
 }
+
+/**
+ * Type for all Customer details
+ */
+interface CustomerDetails {
+  first_name: string;
+  last_name: string;
+  email: string;
+  birthdate: string;
+  ssn_last_four: string;
+}
+
+/**
+ * Type for all Jira Tickets
+ */
+interface JiraTickets {
+  summary: string;
+  description: string;
+}
+
 
 export function ConsolePage() {
   /**
@@ -124,6 +144,8 @@ export function ConsolePage() {
     lng: -122.418137,
   });
   const [marker, setMarker] = useState<Coordinates | null>(null);
+  const [customerDetails, setCustomerDetails] = useState<CustomerDetails | null>(null);
+  const [jiraTickets, setJiraTickets] = useState<JiraTickets | null>(null);
 
   /**
    * Utility for formatting the timing of logs
@@ -412,6 +434,7 @@ export function ConsolePage() {
         return { ok: true };
       }
     );
+
     client.addTool(
       {
         name: 'get_weather',
@@ -456,20 +479,120 @@ export function ConsolePage() {
       }
     );
 
+    // Add tool to fetch customer details
+    async function fetchCustomerDetails(phone: number): Promise<CustomerDetails> {
+      try {
+        const result = await fetch(
+          `https://localhost:8000/get_customer_details/${phone}`
+        );
+
+        if (!result.ok) {
+          console.log('Error fetching customer details:', result.statusText);
+          return { first_name: 'New Customer', last_name: 'New Customer', email: '', birthdate: '', ssn_last_four: '' };
+        }
+        
+        const json: CustomerDetails = await result.json();
+      
+        setCustomerDetails(json);
+
+        // Log the received data
+        console.log('Received customer details:', json);
+        
+        // Return the JSON directly
+        return json;
+      } catch (error) {
+        console.error('Error fetching customer details:', error);
+        throw error;
+      }
+    }
+
+    // Add tool to create jira ticket
+    async function createJiraTicket(summary: string, description: string): Promise<null> {
+      try {
+        const result = await fetch(
+          `https://localhost:8000/create_jira_ticket`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ summary, description })
+          }
+        );
+
+        if (!result.ok) {
+          console.log('Error creating Jira ticket:', result.statusText);
+          return null;
+        }
+        
+        const json = await result.json();
+      
+        setJiraTickets(json);
+
+        // Log the received data
+        console.log('Successfully created Jira Ticket:', json);
+        
+        // Return the JSON directly
+        return json;
+      } catch (error) {
+        console.error('Error creating Jira ticket:', error);
+        throw error;
+      }
+    }
+
+    // Add get_customer_details tool
+    client.addTool(
+      {
+        name: 'get_customer_details',
+        description:
+          'Retrieves the details for the given customer based on the phone number of the person.',
+        parameters: {
+          type: 'object',
+          properties: {
+            phone: { type: 'number', description: 'Phone number' },
+          },
+          required: ['phone'],
+        },
+      },
+      async function (phone: number): Promise<CustomerDetails> {
+        return fetchCustomerDetails(phone);
+      }
+    );
+
+    // Add create jira ticket tool
+    client.addTool(
+      {
+        name: 'create_jira_ticket',
+        description:
+          'Create a Jira ticket with the given details.',
+        parameters: {
+          type: 'object',
+          properties: {
+            summary: { type: 'string', description: 'Summary' },
+            description: { type: 'string', description: 'Description' },
+          },
+          required: ['summary', 'description'],
+        },
+      },
+      async function (summary: string, description: string): Promise<null> {
+        return createJiraTicket(summary, description);
+      }
+    );
+  
     // handle realtime events from client + server for event logging
-    // client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
-    //   setRealtimeEvents((realtimeEvents) => {
-    //     const lastEvent = realtimeEvents[realtimeEvents.length - 1];
-    //     if (lastEvent?.event.type === realtimeEvent.event.type) {
-    //       // if we receive multiple events in a row, aggregate them for display purposes
-    //       lastEvent.count = (lastEvent.count || 0) + 1;
-    //       return realtimeEvents.slice(0, -1).concat(lastEvent);
-    //     } else {
-    //       return realtimeEvents.concat(realtimeEvent);
-    //     }
-    //   });
-    // });
-    // client.on('error', (event: any) => console.error(event));
+    client.on('realtime.event', (realtimeEvent: RealtimeEvent) => {
+      setRealtimeEvents((realtimeEvents) => {
+        const lastEvent = realtimeEvents[realtimeEvents.length - 1];
+        if (lastEvent?.event.type === realtimeEvent.event.type) {
+          // if we receive multiple events in a row, aggregate them for display purposes
+          lastEvent.count = (lastEvent.count || 0) + 1;
+          return realtimeEvents.slice(0, -1).concat(lastEvent);
+        } else {
+          return realtimeEvents.concat(realtimeEvent);
+        }
+      });
+    });
+    client.on('error', (event: any) => console.error(event));
 
     client.on('conversation.interrupted', async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
