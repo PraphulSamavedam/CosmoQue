@@ -1,6 +1,6 @@
-# OpenAI Realtime Console
+# CosmoQue Realtime Console
 
-The OpenAI Realtime Console is intended as an inspector and interactive API reference
+The CosmoQue Realtime Console is intended as an inspector and interactive API reference
 for the OpenAI Realtime API. It comes packaged with two utility libraries,
 [openai/openai-realtime-api-beta](https://github.com/openai/openai-realtime-api-beta)
 that acts as a **Reference Client** (for browser and Node.js) and
